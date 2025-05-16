@@ -8,6 +8,7 @@ public class LeafBlower : MonoBehaviour
 
     public Transform BlowerNozzle;
     public float windForce = 10f;
+    bool isBlowing = false;
 
     // Start is called before the first frame update
     void Start()
@@ -18,10 +19,21 @@ public class LeafBlower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E)) {
-            BlowWind();
+        if (Input.GetKey(KeyCode.E)) { //GetKey for holding down button
+            Debug.Log("button down");
+            isBlowing = true;
+        }
+        else {
+            isBlowing = false;
         }
 
+    }
+
+    private void FixedUpdate() {
+        if (isBlowing) {
+
+            BlowWind();
+        }
     }
 
 
