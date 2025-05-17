@@ -393,8 +393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af16d21f491e9fb48a898a28ce20f509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blowRadius: 3
-  blowForce: 0.05
+  blowRadius: 4.52
+  blowForce: 0.001
   isBlowing: 0
   blowerNozzle: {fileID: 0}
 --- !u!1001 &345712851
@@ -4441,11 +4441,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4905714624667179455, guid: 3aa3868ff1900304eb58739897db9973, type: 3}
       propertyPath: torqueForceMax
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4905714624667179455, guid: 3aa3868ff1900304eb58739897db9973, type: 3}
       propertyPath: torqueForceMin
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4905714624667179455, guid: 3aa3868ff1900304eb58739897db9973, type: 3}
       propertyPath: forwardStrength

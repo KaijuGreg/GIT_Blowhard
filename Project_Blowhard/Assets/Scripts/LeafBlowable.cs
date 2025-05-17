@@ -6,15 +6,16 @@ public class LeafBlowable : MonoBehaviour
 {
     private Rigidbody rb;
 
-   
-    //[SerializeField] private float liftForceMin = 0.5f;
-    //[SerializeField] private float liftForceMax = 0.7f;
-    //[SerializeField] private float torqueForceMin = 0.7f;
-    //[SerializeField] private float torqueForceMax = 0.7f;
+    [SerializeField] private float forwardForceMin = 3f;
+    [SerializeField] private float forwardForceMax = 6f;
+
+    [SerializeField] private float liftForceMin = 0.5f;
+    [SerializeField] private float liftForceMax = 0.7f;
+    [SerializeField] private float torqueForceMin = 0.7f;
+    [SerializeField] private float torqueForceMax = 0.7f;
 
 
-    [SerializeField] private float upwardLiftStrength = 0.5f; // More upward force
-    [SerializeField] private float forwardStrength = 0.5f; // Wind pushes in blowDirection
+ 
     [SerializeField] private float torqueStrength = 2f;
     [SerializeField] private float torqueRandomness = 1f; // optional: adds variation
     [SerializeField] private float blowCooldown = 0.5f; // seconds
@@ -31,31 +32,29 @@ public class LeafBlowable : MonoBehaviour
 
     // This gets called externally when wind hits the leaf
 
-    public void ApplyWindForce(Vector3 blowDirection, float blowForce) {
+    public void ApplyWindForce(Vector3 blowDirection, float globalWindStrength) {
         if (rb == null) return;
 
-        //If still in cooldown, skip applying force
+        // Lift
+        Vector3 lift = Vector3.up * Random.Range(liftForceMin, liftForceMax);
 
-        if (Time.time - lastBlownTime < blowCooldown)
-            return;
+        // Forward force range — random but constrained
+        //float forwardForce = Random.Range(forwardForceMin, forwardForceMax);
 
-        lastBlownTime = Time.time; // reset cooldown timer
+        float forwardForce = forwardForceMax; // No randomness
 
 
-        // --- Calculate Force ---
-        Vector3 upwardLift = Vector3.up * upwardLiftStrength;
-        Vector3 directionalForce = blowDirection.normalized * forwardStrength;
+        // Combine forces
+        Vector3 windForce = (blowDirection * forwardForce) + lift;
 
-        Vector3 totalForce = (upwardLift + directionalForce).normalized * blowForce;
+        rb.AddForce(windForce, ForceMode.Impulse);
 
-        rb.AddForce(totalForce, ForceMode.Impulse);
-
-        // --- Add Random Torque ---
+        // Torque (still randomized)
         Vector3 randomTorque = new Vector3(
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f)
-        ).normalized * torqueStrength * torqueRandomness;
+            Random.Range(-torqueForceMin, torqueForceMax),
+            Random.Range(-torqueForceMin, torqueForceMax),
+            Random.Range(-torqueForceMin, torqueForceMax)
+        ).normalized * torqueStrength;
 
         rb.AddTorque(randomTorque, ForceMode.Impulse);
     }

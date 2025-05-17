@@ -127,4 +127,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaf7b53bda215d8429ac207e635e451e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forwardForceMin: 0.05
+  forwardForceMax: 0.051
+  liftForceMin: 0.05
+  liftForceMax: 0.06
+  torqueForceMin: 0.7
+  torqueForceMax: 0.7
   torqueStrength: 5
+  torqueRandomness: 1
+  blowCooldown: 0.5
