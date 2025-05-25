@@ -52,6 +52,7 @@ public class LeafBlower : MonoBehaviour
     }
 
 
+    // Debug Gizmos for Leaf Blower
     void OnDrawGizmosSelected() {
         
         Vector3 blowDirection = transform.forward;

@@ -14,14 +14,11 @@ public class LeafBlowable : MonoBehaviour
     [SerializeField] private float torqueForceMin = 0.7f;
     [SerializeField] private float torqueForceMax = 0.7f;
 
-
- 
+     
     [SerializeField] private float torqueStrength = 2f;
     [SerializeField] private float torqueRandomness = 1f; // optional: adds variation
     [SerializeField] private float blowCooldown = 0.5f; // seconds
-    private float lastBlownTime = -Mathf.Infinity;
-
-
+    private float lastBlownTime = -999f;
 
 
     //-------------------------------------------------------------------------------------------------------
@@ -32,24 +29,21 @@ public class LeafBlowable : MonoBehaviour
 
     // This gets called externally when wind hits the leaf
 
-    public void ApplyWindForce(Vector3 blowDirection, float globalWindStrength) {
-        if (rb == null) return;
+    public void ApplyWindForce(Vector3 blowDirection, float blowForce) {
+        if (Time.time - lastBlownTime < blowCooldown)
+           
+        return;
+
+        lastBlownTime = Time.time;
 
         // Lift
-        Vector3 lift = Vector3.up * Random.Range(liftForceMin, liftForceMax);
+        Vector3 forwardForce = blowDirection.normalized * Random.Range (forwardForceMin,forwardForceMax)* blowForce;
+        Vector3 liftForce = Vector3.up * Random.Range(liftForceMin, liftForceMax);
 
-        // Forward force range — random but constrained
-        //float forwardForce = Random.Range(forwardForceMin, forwardForceMax);
-
-        float forwardForce = forwardForceMax; // No randomness
-
-
-        // Combine forces
-        Vector3 windForce = (blowDirection * forwardForce) + lift;
+        Vector3 windForce = forwardForce + liftForce;
 
         rb.AddForce(windForce, ForceMode.Impulse);
 
-        // Torque (still randomized)
         Vector3 randomTorque = new Vector3(
             Random.Range(-torqueForceMin, torqueForceMax),
             Random.Range(-torqueForceMin, torqueForceMax),
@@ -57,11 +51,9 @@ public class LeafBlowable : MonoBehaviour
         ).normalized * torqueStrength;
 
         rb.AddTorque(randomTorque, ForceMode.Impulse);
+
+   
     }
-
-
-
-
-
+       
 
 }
