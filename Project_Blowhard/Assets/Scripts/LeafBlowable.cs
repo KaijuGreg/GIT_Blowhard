@@ -16,7 +16,7 @@ public class LeafBlowable : MonoBehaviour
 
      
     [SerializeField] private float torqueStrength = 2f;
-    [SerializeField] private float torqueRandomness = 1f; // optional: adds variation
+    //[SerializeField] private float torqueRandomness = 1f; // optional: adds variation
     [SerializeField] private float blowCooldown = 0.5f; // seconds
     private float lastBlownTime = -999f;
 

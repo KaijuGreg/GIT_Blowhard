@@ -6,7 +6,8 @@ public class Player : MonoBehaviour {
 
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private GameInput gameInput;  // Here we assign a GameInput class
-    [SerializeField] private LayerMask collisionMask;
+    [SerializeField] private LayerMask collisionMask; // This is used to exclude the leaves from collision when walking around
+    [SerializeField] private LayerMask treeLayerMask;
 
     public Transform leafBlowerPrefab;
     public Transform handTransform;
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour {
 
     private void Start() {
 
-      
+        gameInput.OnInteractAction += GameInput_OnInteractAction; 
 
         // Instantiate the leaf blower at the hand's position and rotation
         Transform leafBlower = Instantiate(leafBlowerPrefab, handTransform.position, handTransform.rotation);
@@ -39,6 +40,41 @@ public class Player : MonoBehaviour {
 
 
     }
+
+    private void GameInput_OnInteractAction(object sender, System.EventArgs e)
+    {
+        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+
+        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+
+        if (moveDir != Vector3.zero)
+        { // this is for ensuring that Interactions are still working even we are not moving
+
+            lastInteractDir = moveDir; // this saves into lastInteractDir to be used when not moving below
+
+        }
+
+        float interactDistance = 2f;
+
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, treeLayerMask))
+        { // this ray only finds objects on the treeLayerMask
+
+            if (raycastHit.transform.TryGetComponent(out Tree tree))
+            {
+                // Has Tree component
+
+                Debug.DrawRay(transform.position, lastInteractDir * interactDistance, Color.red, 5f);
+                tree.Interact();
+
+            }
+
+        }
+        else
+        {
+            //Debug.Log("_");
+        }
+    }
+
 
     private void Update() {
 
@@ -58,7 +94,8 @@ public class Player : MonoBehaviour {
 
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
-        if (moveDir != Vector3.zero) { // this is for ensuring that Interactions are still working even we are not moving
+        if (moveDir != Vector3.zero)
+        { // this is for ensuring that Interactions are still working even we are not moving
 
             lastInteractDir = moveDir; // this saves into lastInteractDir to be used when not moving below
 
@@ -66,13 +103,22 @@ public class Player : MonoBehaviour {
 
         float interactDistance = 2f;
 
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance)) {
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, treeLayerMask))
+        { // this ray only finds objects on the treeLayerMask
 
-            Debug.Log(raycastHit.transform);
+            if (raycastHit.transform.TryGetComponent(out Tree tree))
+            {
+                // Has Tree component
+
+                Debug.DrawRay(transform.position, lastInteractDir * interactDistance, Color.red, 5f);
+               // tree.Interact();
+
+            }
 
         }
-        else {
-            Debug.Log("_");
+        else
+        {
+            //Debug.Log("_");
         }
 
     }

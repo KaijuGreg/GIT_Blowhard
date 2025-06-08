@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using System;
 
 public class LeafBlower : MonoBehaviour
 {
@@ -9,25 +10,29 @@ public class LeafBlower : MonoBehaviour
     [SerializeField] float blowForce = 0.05f;
     [SerializeField] bool isBlowing = false;
 
+    [SerializeField] private GameInput gameInput;
+
     public Transform blowerNozzle;
-       
+
+
+    private void Awake()
+    {
+        gameInput = GameInput.Instance;
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameInput.OnFireStarted += StartBlowing;
+        gameInput.OnFireCancelled += StopBlowing;
+
     }
 
     
     void Update()
     {
-        if (Input.GetKey(KeyCode.E)) { //GetKey for holding down button. Turns on the Blower.
-            Debug.Log("button down");
-            isBlowing = true;
-        }
-        else {
-            isBlowing = false;
-        }
+     
 
     }
 
@@ -50,6 +55,29 @@ public class LeafBlower : MonoBehaviour
             }
         }
     }
+
+
+    private void StartBlowing(object sender, EventArgs e)
+    {
+        isBlowing = true;
+        Debug.Log("Fire was pressed here");
+    }
+
+    private void StopBlowing (object sender, EventArgs e)
+    {
+        isBlowing = false;
+    }
+
+
+    private void OnDestroy()
+    {
+        gameInput.OnFireStarted -= StartBlowing;
+        gameInput.OnFireCancelled -= StopBlowing;
+    }
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------------
 
 
     // Debug Gizmos for Leaf Blower
